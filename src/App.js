@@ -15,7 +15,7 @@ function App() {
   return (
     <BrowserRouter>
     <Switch>
-    <>
+    <div>
     <Header/>
       <Route path="/" component={Home} exact/>
       <Route path="/create" component={Create} />
@@ -27,7 +27,7 @@ function App() {
       {isAuthenticated? <Profile/> : <Home/>}
       </Route>
       <Footer/>
-      </>
+      </div>
     </Switch>
     <Redirect path="/" exact/>
     </BrowserRouter>

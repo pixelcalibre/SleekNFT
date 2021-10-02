@@ -1,24 +1,28 @@
 import React, {useState,useEffect} from 'react'
 import { useMoralis, useMoralisFile,useNewMoralisObject} from 'react-moralis';
 import '../Create.css';
-import {tokenContractAbi} from '../abi.js';
+import {marketplaceContractAbi, tokenContractAbi} from '../abi.js';
 
-const TOKEN_CONTRACT_ADDRESS="0x32d335625C0DCE376FE68Ca4B7075c9C1d279211";
+
+const TOKEN_CONTRACT_ADDRESS="0xA937CDE78CD3F35B88Bd5f314AE40C7EC0936cD4";
+const MARTKETPLACE_CONTRACT_ADDRESS="0x5F93BfD7529f01E32DA50A0450bb88B3fe20720b";
 
 function Createcomponent() {
-    const{enableWeb3, isWeb3Enabled, web3,isAuthenticated,user}=useMoralis();
+  let statusValue;
+    const{enableWeb3, web3,isAuthenticated,user}=useMoralis();
     const { save } = useNewMoralisObject('Item');
     const {saveFile} = useMoralisFile();
     const [file, setFile] = useState('');
     const [filename, setFilename] = useState("");
     const [price, setPrice] = useState("0");
-    const [nftstatus, setNftstatus] = useState("Not For Sale");
+    const [nftstatus, setNftstatus] = useState("Instant Buy");
     const [description, setDescription] = useState("");
 
     
 
 
     const tokenContract = new web3.eth.Contract(tokenContractAbi, TOKEN_CONTRACT_ADDRESS);
+    const marketplaceContract = new web3.eth.Contract(marketplaceContractAbi, MARTKETPLACE_CONTRACT_ADDRESS);
     // enableWeb3();
     useEffect(() => {
         if (isAuthenticated) {
@@ -34,7 +38,7 @@ function Createcomponent() {
           
         }
        }
-       console.log(isWeb3Enabled);
+      //  console.log(isWeb3Enabled);
     
     
     
@@ -72,7 +76,7 @@ function Createcomponent() {
         const receipt = await tokenContract.methods.createItem(metadataUrl).send({from: myWalletAddress });
         // const receipt = await tokenContract.methods.createItem(metadataUrl).send({from: myWalletAddress });
 
-        console.log(receipt);
+        // console.log(receipt);
         return receipt.events.Transfer.returnValues.tokenId;
     };
      const nftId = await mintNft(nftFileMetaDataPath);
@@ -87,21 +91,43 @@ function Createcomponent() {
          'nftId':nftId,
          'nftContractAddress':TOKEN_CONTRACT_ADDRESS,
         });
-    
-    
-     // const nftId = await mintNft(nftFileMetaDataPath);
-    // const Item = Moralis.Object.extend("Item");
-    // const item = new Item();
-    // item.set('name',filename);
-    // item.set('description',description);
-    // item.set('nftFilePath',nftFilePath);
-    // item.set('nftFileHash',nftFileHash);
-    // item.set('metadataFilePath',nftFileMetaDataPath);
-    // item.set('metadataFileHash',nftFileMetaDataHash);
-    // await item.save();
-    // //console.log(Item);
-    //  //console.log("I'm clicked");
+        
+        switch(nftstatus){
+          case "notforsale":
+            statusValue="0";
+              break;
+          case "instantbuy":
+            statusValue="1";
+              break;
+          case "acceptoffers":
+            statusValue="2";
+              break;
+          default: ;
+      }
+      console.log(nftstatus,statusValue);
+        const userAddress = await user.get('ethAddress');
+        switch(statusValue){
+          case "0":
+              return;
+          case "1":
+              await ensureMarketplaceIsApproved(nftId, TOKEN_CONTRACT_ADDRESS);
+              await marketplaceContract.methods.addItemToMarket(nftId, TOKEN_CONTRACT_ADDRESS, price).send({from: userAddress });
+              break;
+          case "2":
+              console.log("Not yet supported!");
+              return;
+          default: return;
+      }
+       console.log(nftstatus);
        }
+       const ensureMarketplaceIsApproved = async (tokenId, tokenAddress) => {
+        const userAddress = await user.get('ethAddress');
+        const contract = new web3.eth.Contract(tokenContractAbi, tokenAddress);
+        const approvedAddress = await contract.methods.getApproved(tokenId).call({from: userAddress});
+        if (approvedAddress !== MARTKETPLACE_CONTRACT_ADDRESS){
+            await contract.methods.approve(MARTKETPLACE_CONTRACT_ADDRESS,tokenId).send({from: userAddress});
+        }
+    }
 
     return (
         <div className="absolute left-96 top-16 bg-my-black-color w-3/6 h-56 my-10 rounded-lg">

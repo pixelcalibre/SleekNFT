@@ -6,12 +6,13 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 
 const MyItems = () => {
     const { data} = useMoralisCloudFunction("getUserItems");
-    const [title, setTitle] = useState('');
+    const [title, setTitle] = useState('You don\'t have any NFTs');
     const [description, setDescription] = useState('');
     const [source, setSource] = useState('/ethbanner1.svg');
     const [count, setCount] = useState(0);
-
+// const visited
 useEffect(()=>{
+    if(data){
     fetch(data[count].tokenuri)
     .then( res => res.json())
     .then( nft => {
@@ -19,8 +20,12 @@ useEffect(()=>{
         setDescription(nft.description);
         setSource(nft.image);
     });
-},[count]);
+}
+},);
 console.log(count);
+
+// javascript example 
+
 //     getAndRenderItemData = (item, renderFunction) => {
     
 //         fetch(item.tokenUri)
@@ -55,6 +60,9 @@ console.log(count);
             </div>
             <div className="absolute text-my-black-color top-180 right-450 cursor-pointer"  onClick={() => (count === data.length-1? setCount(0) : setCount(count+1))}>
             <ArrowForwardIosIcon fontSize="large"/> 
+            </div>
+            <div className="absolute top-640 left-700 py-2 px-4 rounded-full bg-my-black-color">
+                <h1 className="text-center text-my-gold-color">{data? count+1 : 0}</h1>
             </div>
             
             

@@ -12,6 +12,7 @@
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "@walletconnect/web3-provider": "^1.6.5",
+    "axios": "^0.22.0",
     "moralis": "0.0.42",
     "react": "^17.0.2",
     "react-card-slide": "^1.0.13",

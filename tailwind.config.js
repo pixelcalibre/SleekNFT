@@ -34,8 +34,12 @@ module.exports = {
         '685':'680px',
         '130':'130px',
         '180': '345px',
-        '450':'430px',
-        
+        '450':'440px',
+        '640':'640px',
+        '690':'710px',
+        '700':'715px',
+        '800':'750px',
+
       },
       gradientColorStops: theme => ({
         'primary': '#ff0d0d',
