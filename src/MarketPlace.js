@@ -50,6 +50,7 @@ const MarketPlace = () => {
     // }
  console.log(item);
     return (
+        
         <div className="relative bg-gradient-to-r from-primary to-secondary">
         <h1 className="px-4 py-4 text-my-black-color">1 results</h1>
              <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 h-screen ">
