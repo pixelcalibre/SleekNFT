@@ -1,8 +1,8 @@
-import ArrowBackIos from '@material-ui/icons/ArrowBackIos'
-import ArrowForwardIos from '@material-ui/icons/ArrowForwardIos'
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import React, { useState, useEffect } from 'react'
-import { useMoralisCloudFunction } from 'react-moralis'
-import MarketCard from './components/MarketCard'
+import { useMoralisCloudFunction,useMoralis,useMoralisQuery } from 'react-moralis'
+import Moralis from 'moralis'; 
 // import { useMoralis} from 'react-moralis';
 // import {marketplaceContractAbi} from './abi.js';
 
@@ -11,66 +11,67 @@ import MarketCard from './components/MarketCard'
 
 
 const MarketPlace = () => {
+    const {user} = useMoralis();
     const {data} = useMoralisCloudFunction("getItems");
-    // const [title, setTitle] = useState('You don\'t have any NFTs');
-    // const [description, setDescription] = useState('');
-    // const [source, setSource] = useState('/ethbanner1.svg');
-    const item = [{
-        "myId":"",
-        "owner":"",
-        "name":"No NFTs",
-        "desc":"No Description",
-        "price":"",
-        "source":"./ethbanner3.svg",
-    }];
-    const [page, setPage] = useState(0);
-    if(data){console.log(data.length);}
+    const [title, setTitle] = useState('Empty');
+    const [description, setDescription] = useState('No NFTs in the market place');
+    const [price,setPrice] = useState(0);
+    const [source, setSource] = useState('/ethbanner1.svg');
+    const [seller,setSeller] = useState('Unknown');
+    const [count, setCount] = useState(0);
 
-    const items = async function(){
-         let i=0;
-      await data?.map(it => {
-         fetch(it.tokenuri)
+    const { data1} = useMoralisQuery(
+        "SoldItems",{live:true});
+    console.log(data1);
+    // const soldItemsQuery = new Moralis.Query('SoldItems');
+    // const soldItemsSubscription = soldItemsQuery.subscribe();
+
+
+      useEffect(()=>{
+        if(data){
+        fetch(data[count].tokenuri)
         .then( res => res.json())
         .then( nft => {
-            item[i]= {
-                "myId": i++,
-                "owner":it.sellerUsername,
-                "name":nft.name,
-                "desc":nft.description,
-                "price":it.askingPrice,
-                "source":nft.image
-            }
+            setTitle(nft.name);
+            setDescription(nft.description);
+            setSource(nft.image);
+            setPrice(data[count].askingPrice);
+            setSeller(data[count].sellerUsername);
         });
-      })};
-      items();
-    
+    }
+    },);
 
-    // for(let i=0;i<2;i++){
-    //     console.log(item[i].name,item[i].desc,item[i].source);
-    // }
- console.log(item);
+ console.log(data);
     return (
         
-        <div className="relative bg-gradient-to-r from-primary to-secondary">
-        <h1 className="px-4 py-4 text-my-black-color">1 results</h1>
-             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 h-screen ">
-             {item.map(one => (
-                <MarketCard 
-                key={one.myId}
-            name={one.name}
-            description={one.desc}
-            source={one.source}
-            />
-             ))}
-              
-         </div>
-         <div className="absolute top-800 flex text-my-black-color left-690">
-             <ArrowBackIos fontSize="medium" className="cursor-pointer" onClick={() => (page > 0 ? setPage(page-1):0)}/>
-             <p className="text-center">Page {page+1} </p>
-             <ArrowForwardIos fontSize="medium" className="cursor-pointer" onClick={() => (page === Math.floor((data.length)/8) ? setPage(Math.floor((data.length)/8)) : setPage(page+1))}/>
-         </div>
-        </div>
-       
+        <div className="relative h-screen
+        bg-gradient-to-r from-primary to-secondary ">
+           <h1 className="text-my-black-color text-3xl font-bold px-640 pt-10">Explore NFTs</h1>  
+           <div className="absolute top-130 left-500 bg-my-black-color p-5 rounded-md">
+               <div className="object-contain">
+               <img src={source} alt="your nft" className="h-350 w-350 p-5 pb-0" />
+               </div>
+               <div>
+               <div className="flex justify-evenly">
+               <h3 className="p-3 text-center">{title}</h3>
+               <button type="submit" className="bg-gradient-to-r from-primary to-secondary text-my-black-color m-2 px-3 py-3 rounded-2xl">{price} SLEEK</button>
+               </div>
+                   
+                   <p className="p-3">{description}</p>
+               </div>
+           </div>
+           <div className="absolute text-my-black-color top-180 left-400 cursor-pointer" onClick={() => (count > 0 ? setCount(count-1): setCount(data.length-1))}>
+           <ArrowBackIosIcon  fontSize="large" />
+           </div>
+           <div className="absolute text-my-black-color top-180 right-450 cursor-pointer" onClick={() => (count === data.length-1? setCount(0) : setCount(count+1))}>
+           <ArrowForwardIosIcon fontSize="large"/> 
+           </div>
+           <div className="absolute top-640 left-700 py-2 px-4 rounded-full bg-my-black-color">
+               <h1 className="text-center text-my-gold-color">{count+1}</h1>
+           </div>
+           
+           
+       </div>
     )
 }
 

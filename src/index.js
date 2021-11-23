@@ -4,8 +4,8 @@ import './index.css';
 import App from './App';
 import { MoralisProvider } from 'react-moralis';
 
-const appId='DjP6pnKXzJm5OVbjzWbDBjtpnTIFXAtwinTo0onG';
-const serverUrl='https://gw7ndbsugysh.grandmoralis.com:2053/server';
+const appId='vgXE9w1xjKC0ySGaujFZrBBhgXRBYCPZUZiJ4XeI';
+const serverUrl='https://obdg0bq48m4m.usemoralis.com:2053/server';
 // const TOKEN_CONTRACT_ADDRESS="0xB2d6e1A60e3aADC3204388C794c626c1617846cA";
 
 

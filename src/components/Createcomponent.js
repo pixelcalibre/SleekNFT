@@ -4,8 +4,8 @@ import '../Create.css';
 import {marketplaceContractAbi, tokenContractAbi} from '../abi.js';
 
 
-const TOKEN_CONTRACT_ADDRESS="0xA937CDE78CD3F35B88Bd5f314AE40C7EC0936cD4";
-const MARTKETPLACE_CONTRACT_ADDRESS="0x5F93BfD7529f01E32DA50A0450bb88B3fe20720b";
+const TOKEN_CONTRACT_ADDRESS="0x1B5A46fB6f0589b48184a1788Fc35d7E920fCEA9";
+const MARTKETPLACE_CONTRACT_ADDRESS="0xD09eEd06f09db762F181f37d354c4B6debf9fd31";
 
 function Createcomponent() {
   let statusValue;

@@ -22,6 +22,7 @@ useEffect(()=>{
     });
 }
 },);
+console.log(data);
 console.log(count);
 
 // javascript example 
