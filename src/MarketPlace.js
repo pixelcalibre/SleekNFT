@@ -19,10 +19,12 @@ const MarketPlace = () => {
     const [source, setSource] = useState('/ethbanner1.svg');
     const [seller,setSeller] = useState('Unknown');
     const [count, setCount] = useState(0);
+    const [num,setNum] = useState(0);
 
-    const { data1} = useMoralisQuery(
-        "SoldItems",{live:true});
-    console.log(data1);
+    console.log(num);
+    // const { data1} = useMoralisQuery(
+    //     "SoldItems",{live:true});
+    // console.log(data1);
     // const soldItemsQuery = new Moralis.Query('SoldItems');
     // const soldItemsSubscription = soldItemsQuery.subscribe();
 
@@ -54,7 +56,7 @@ const MarketPlace = () => {
                <div>
                <div className="flex justify-evenly">
                <h3 className="p-3 text-center">{title}</h3>
-               <button type="submit" className="bg-gradient-to-r from-primary to-secondary text-my-black-color m-2 px-3 py-3 rounded-2xl">{price} SLEEK</button>
+               <button type="submit" className="bg-gradient-to-r from-primary to-secondary text-my-black-color m-2 px-3 py-3 rounded-2xl"onClick={() => setNum(num++)}>{price} SLEEK</button>
                </div>
                    
                    <p className="p-3">{description}</p>
