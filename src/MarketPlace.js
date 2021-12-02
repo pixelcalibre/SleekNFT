@@ -10,7 +10,7 @@ const MARTKETPLACE_CONTRACT_ADDRESS="0xD09eEd06f09db762F181f37d354c4B6debf9fd31"
 
 
 const MarketPlace = () => {
-    const {user,web3} = useMoralis();
+    const {enableWeb3, web3,isAuthenticated,user} = useMoralis();
     const {data} = useMoralisCloudFunction("getItems");
     const [title, setTitle] = useState('Empty');
     const [description, setDescription] = useState('No NFTs in the market place');
@@ -37,6 +37,9 @@ const MarketPlace = () => {
     
 
       useEffect(()=>{
+        if (isAuthenticated) {
+            enableWeb3();
+          }
         if(items){
         fetch(items[count].tokenuri)
         .then( res => res.json())
@@ -52,8 +55,8 @@ const MarketPlace = () => {
     },);
     const buyItem = async (item) => {
         console.log("I'm clicked");
-        // const myWalletAddress = user.get('ethAddress');
-        await marketplaceContract.methods.buyItem(item[count].uid).send({from: user.get('ethAddress'), value: item[count].askingPrice});
+        const myWalletAddress = '0xd782B8d8660Ae5293eDd4A16F6ECA12D4aDE3ef4';
+        await marketplaceContract.methods.buyItem(item[count].uid).send({from: myWalletAddress, value: item[count].askingPrice});
     }
 
  
